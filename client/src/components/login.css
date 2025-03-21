@@ -79,6 +79,7 @@
     padding: 50px 100px 40px 100px;
     width: 300px;
     height: 300px;
+     top: 75px;
 /*     min-height: 430px; */
     flex-direction: column;
     justify-content: center;
