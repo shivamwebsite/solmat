@@ -39,7 +39,7 @@ function Navbar() {
             <div className="nav">
               <NavLink><div className="navbar">Drill</div></NavLink>
               <NavLink><div className="navbar">Premium</div></NavLink>
-              <NavLink><div className="navbar">Challenges</div></NavLink>
+              <NavLink><div className="navbar">Rewards</div></NavLink>
               <NavLink to="/tutorial" ><div className="navbar">Tutorial</div></NavLink>
               <NavLink><div className="navbar">Contact Us</div></NavLink>
               <NavLink to="/" ><div className="navbar">Log Out</div></NavLink>
@@ -51,7 +51,7 @@ function Navbar() {
           <div className="navbarhandlecont" id="sidebar" onClick={handleclose}>
             <NavLink className="navbar" to=""> <span>Drill</span></NavLink>
             <NavLink className="navbar" to=""><span>Premium</span></NavLink>
-            <NavLink className="navbar" to=""> <span>Challenges</span></NavLink>
+            <NavLink className="navbar" to=""> <span>Rewards</span></NavLink>
             <NavLink className="navbar" to="/tutorial"> <span>Tutorial</span></NavLink>
             <NavLink className="navbar" to="/"><span>Log Out</span></NavLink>
             {/* <!-- <span>ENROLLMENT</span> --> */}
