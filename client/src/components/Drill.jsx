@@ -6,14 +6,34 @@ function Drill() {
   return (
     <>
       <div className="tutcont1">
+      <div class="thumb-container">
+          <div class="thumb-image">
+            <img src="strech.jpg" alt="Thumbnail Image" />
+          </div>
+          <div class="thumbnail-details">
+            <div class="thumbnail-title">Stretching for Flexibility</div>
+            <div class="thumbnail-channel">Improve your flexibility and prevent injuries with these effective stretching exercises. Learn about different types of stretches and how to incorporate them into your daily routine.</div>
+            <div class="thum"><NavLink to="/input"> <button>Start</button> </NavLink></div>
+          </div>
+        </div>
         <div class="thumb-container">
           <div class="thumb-image">
             <img src="push.jpg" alt="Thumbnail Image" />
           </div>
           <div class="thumbnail-details">
-            <div class="thumbnail-title">About Push Up</div>
+            <div class="thumbnail-title">Push Up</div>
             <div class="thumbnail-channel">Push-ups are a classic bodyweight exercise that primarily targets the chest, shoulders, and triceps, but also engages the core and other stabilizing muscles.
               They're a versatile exercise that can be done virtually anywhere, making them a popular choice for building upper body strength and endurance.</div>
+            <div class="thum"><NavLink to="/input"> <button>Start</button> </NavLink></div>
+          </div>
+        </div>
+        <div class="thumb-container">
+          <div class="thumb-image">
+            <img src="weight.jpg" alt="Thumbnail Image" />
+          </div>
+          <div class="thumbnail-details">
+            <div class="thumbnail-title">Weightlifting for Strength</div>
+            <div class="thumbnail-channel">Weightlifting is an excellent way to build muscle and increase strength. Learn proper techniques and exercises to maximize your results and avoid injuries. Start lifting and transform your body.</div>
             <div class="thum"><NavLink to="/input"> <button>Start</button> </NavLink></div>
           </div>
         </div>
@@ -63,17 +83,6 @@ function Drill() {
 
         <div class="thumb-container">
           <div class="thumb-image">
-            <img src="weight.jpg" alt="Thumbnail Image" />
-          </div>
-          <div class="thumbnail-details">
-            <div class="thumbnail-title">Weightlifting for Strength</div>
-            <div class="thumbnail-channel">Weightlifting is an excellent way to build muscle and increase strength. Learn proper techniques and exercises to maximize your results and avoid injuries. Start lifting and transform your body.</div>
-            <div class="thum"><NavLink to="/input"> <button>Start</button> </NavLink></div>
-          </div>
-        </div>
-
-        <div class="thumb-container">
-          <div class="thumb-image">
             <img src="cycle.jpg" alt="Thumbnail Image" />
           </div>
           <div class="thumbnail-details">
@@ -101,17 +110,6 @@ function Drill() {
           <div class="thumbnail-details">
             <div class="thumbnail-title">Hiking for Adventure</div>
             <div class="thumbnail-channel">Hiking is a great way to explore nature, get exercise, and relieve stress. Discover beautiful trails, learn about hiking safety, and find out how to prepare for your next outdoor adventure.</div>
-            <div class="thum"><NavLink to="/input"> <button>Start</button> </NavLink></div>
-          </div>
-        </div>
-
-        <div class="thumb-container">
-          <div class="thumb-image">
-            <img src="strech.jpg" alt="Thumbnail Image" />
-          </div>
-          <div class="thumbnail-details">
-            <div class="thumbnail-title">Stretching for Flexibility</div>
-            <div class="thumbnail-channel">Improve your flexibility and prevent injuries with these effective stretching exercises. Learn about different types of stretches and how to incorporate them into your daily routine.</div>
             <div class="thum"><NavLink to="/input"> <button>Start</button> </NavLink></div>
           </div>
         </div>

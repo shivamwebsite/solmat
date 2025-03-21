@@ -59,10 +59,11 @@
     padding: 10px;
     display: flex;
     flex-direction: column;
+    margin-left: 20px;
   }
 
   .thumbnail-title {
-    font-size: 18px;
+    font-size: 25px;
     font-weight: bold;
     margin-bottom: 5px;
     color: white;

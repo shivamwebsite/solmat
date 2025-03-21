@@ -41,10 +41,11 @@ function Navbar() {
               <NavLink><div className="navbar">Premium</div></NavLink>
               <NavLink><div className="navbar">Challenges</div></NavLink>
               <NavLink to="/tutorial" ><div className="navbar">Tutorial</div></NavLink>
+              <NavLink><div className="navbar">Contact Us</div></NavLink>
               <NavLink to="/" ><div className="navbar">Log Out</div></NavLink>
             </div>
             <div>
-              <div className="navbar" style={{ alignItems: "center", display: "flex" }}><HiFire style={{ fontSize: "25px", color: "red" }} />0</div>
+              <div className="navbar" style={{ alignItems: "center", display: "flex",fontSize:"20px",fontWeight:"bold" }}><HiFire style={{ fontSize: "30px", color: "red" }} />10</div>
             </div>
           </div>
           <div className="navbarhandlecont" id="sidebar" onClick={handleclose}>
@@ -54,7 +55,7 @@ function Navbar() {
             <NavLink className="navbar" to="/tutorial"> <span>Tutorial</span></NavLink>
             <NavLink className="navbar" to="/"><span>Log Out</span></NavLink>
             {/* <!-- <span>ENROLLMENT</span> --> */}
-            <NavLink to="/enroll"><span className='handlearrow'>ENROLLMENT<FaArrowRight className='enroolarrow' /> </span></NavLink>
+            {/* <NavLink to="/enroll"><span className='handlearrow'>ENROLLMENT<FaArrowRight className='enroolarrow' /> </span></NavLink> */}
           </div>
         </div>
       </header>

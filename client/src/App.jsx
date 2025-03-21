@@ -8,6 +8,8 @@ import Register from './components/Register'
 import Tutorial from './components/Tutorial'
 import Drill from './components/Drill'
 import Home1 from './components/Home1'
+import Home2 from './components/Home2'
+import Pushup from './components/Pushup'
 
 function App() {
   const router=createBrowserRouter([
@@ -35,10 +37,14 @@ function App() {
       path:"/input1",
       element:<><Navbar/><Home1/></>
     },
-    // {
-    //   path:"/input2",
-    //   element:<><Navbar/><Home2/></>
-    // },
+    {
+      path:"/input2",
+      element:<><Navbar/><Home2/></>
+    },
+    {
+      path:"/push",
+      element:<><Pushup/></>
+    },
   ])
 
   return (

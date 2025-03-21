@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Push-up Counter</title>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
+    <style>
+        .input_video, .output_canvas {
+            position: absolute;
+            transform: scaleX(-1);
+        }
+        #pushup-count {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <video class="input_video"></video>
+    <canvas class="output_canvas" width="640px" height="480px"></canvas>
+    <div id="pushup-count">Push-ups: 0</div>
+    <script>
+        const videoElement = document.querySelector('.input_video');
+        const canvasElement = document.querySelector('.output_canvas');
+        const canvasCtx = canvasElement.getContext('2d');
+        const pushupCountElement = document.getElementById('pushup-count');
+
+        let pushupCount = 0;
+        let position = 'up'; // Tracks the current position (up or down)
+
+        function calculateAngle(a, b, c) {
+            const radians = Math.atan2(c.y - b.y, c.x - b.x) - Math.atan2(a.y - b.y, a.x - b.x);
+            let angle = Math.abs(radians * (180 / Math.PI));
+            if (angle > 180) {
+                angle = 360 - angle;
+            }
+            return angle;
+        }
+
+        function onResults(results) {
+            canvasCtx.save();
+            canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+            canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+
+            if (results.poseLandmarks) {
+                const landmarks = results.poseLandmarks;
+
+                // Draw landmarks and connections
+                drawConnectors(canvasCtx, landmarks, POSE_CONNECTIONS, { color: '#00FF00', lineWidth: 4 });
+                drawLandmarks(canvasCtx, landmarks, { color: '#FF0000', radius: 5 });
+
+                // Calculate angles for push-up detection
+                const leftElbowAngle = calculateAngle(landmarks[11], landmarks[13], landmarks[15]);
+                const rightElbowAngle = calculateAngle(landmarks[12], landmarks[14], landmarks[16]);
+
+                // Check for "down" position (elbows bent)
+                if ((leftElbowAngle < 70 || rightElbowAngle < 70) && position === 'up') {
+                    position = 'down';
+                }
+
+                // Check for "up" position (elbows straight)
+                if ((leftElbowAngle > 160 && rightElbowAngle > 160) && position === 'down') {
+                    position = 'up';
+                    pushupCount++;
+                    pushupCountElement.textContent = `Push-ups: ${pushupCount}`;
+                }
+            }
+
+            canvasCtx.restore();
+        }
+
+        const pose = new Pose({
+            locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
+        });
+
+        pose.setOptions({
+            modelComplexity: 1,
+            smoothLandmarks: true,
+            enableSegmentation: false,
+            minDetectionConfidence: 0.5,
+            minTrackingConfidence: 0.5
+        });
+
+        pose.onResults(onResults);
+
+        const camera = new Camera(videoElement, {
+            onFrame: async () => {
+                await pose.send({ image: videoElement });
+            },
+            width: 640,
+            height: 480
+        });
+
+        camera.start();
+    </script>
+</body>
+</html>

@@ -3,6 +3,7 @@ import "./home.css"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { IoMdArrowRoundForward } from "react-icons/io";
+import { NavLink } from 'react-router-dom';
 
 function Home1() {
 
@@ -41,13 +42,13 @@ function Home1() {
             <div>
                 <div className="tutcont">
                     <div className="homecont">
-                        <div className="homehead">What's your height ?</div>
-                        <div className="homeoption" onClick={selection} >Between 15 and 20</div>
-                        <div className="homeoption" onClick={selection1}>Between 21 and 30</div>
-                        <div className="homeoption" onClick={selection2}>Between 31 and 40</div>
-                        <div className="homeoption" onClick={selection3}>Above 40</div>
+                        <div className="homehead">What's your height(in cm) ?</div>
+                        <div className="homeoption" onClick={selection} >Between 155 and 160</div>
+                        <div className="homeoption" onClick={selection1}>Between 161 and 170</div>
+                        <div className="homeoption" onClick={selection2}>Between 171 and 180</div>
+                        <div className="homeoption" onClick={selection3}>Above 180</div>
                         <div className="btn">
-                            <button className='hbutton' >Next<IoMdArrowRoundForward style={{ fontSize: "30px" }} className='arrow' /></button>
+                        <NavLink to="/input2" className='hbutton'><button>Next<IoMdArrowRoundForward style={{fontSize:"30px"}} className='arrow' /></button></NavLink>
                         </div>
                     </div>
                 </div>
