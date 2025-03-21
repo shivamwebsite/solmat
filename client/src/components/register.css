@@ -9,7 +9,7 @@
 }
 .regibody{
     display: flex;
-    background:url("/soul.jpg");
+    background:url("/soul.jpeg");
     background-size:cover;
     background-repeat: no-repeat;
     background-position: center;
