@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Push-up Counter</title>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
+    <style>
+        .input_video, .output_canvas {
+            position: absolute;
+            transform: scaleX(-1);
+        }
+        #pushup-count {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 20px;
+        }
+        #error-message {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background-color: rgba(255, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <video class="input_video"></video>
+    <canvas class="output_canvas" width="320px" height="240px"></canvas>
+    <div id="pushup-count">Count: 0</div>
+    <div id="error-message" style="display: none;"></div>
+
+    <script>
+        const videoElement = document.getElementsByClassName('input_video')[0];
+        const canvasElement = document.getElementsByClassName('output_canvas')[0];
+        const canvasCtx = canvasElement.getContext('2d');
+        const pushupCountElement = document.getElementById('pushup-count');
+        const errorMessageElement = document.getElementById('error-message');
+
+        let count = 0;
+        let position = null;
+        let imlist = [];
+        let leftElbowAngleSmoothed = null;
+        let rightElbowAngleSmoothed = null;
+        let frameCounter = 0;
+
+        // Initialize Web Worker
+        let myWorker = new Worker("worker.js");
+
+        myWorker.onmessage = function(event) {
+            // Receive processed data from the worker
+            console.log("Worker data:", event.data);
+            //Here you can do further processing with the recieved coordinates, if you need to.
+        };
+
+        function calculateAngle(a, b, c) {
+            const radians = Math.atan2(c[1] - b[1], c[0] - b[0]) - Math.atan2(a[1] - b[1], a[0] - b[0]);
+            let angle = Math.degrees(radians);
+            angle = Math.abs(angle);
+            if (angle > 180.0) {
+                angle = 360 - angle;
+            }
+            return angle;
+        }
+
+        function smoothAngle(angle, previousAngle, alpha = 0.2) {
+            if (previousAngle === null) {
+                return angle;
+            }
+            return alpha * angle + (1 - alpha) * previousAngle;
+        }
+
+        function onResults(results) {
+            frameCounter++;
+            if (frameCounter % 30 === 0) {
+                console.log("Frames processed:", frameCounter);
+            }
+
+            canvasCtx.save();
+            canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+            canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+
+            if (results.poseLandmarks) {
+                drawLandmarks(canvasCtx, results.poseLandmarks, { color: '#FF0000', lineWidth: 2, radius: 2 });
+
+                imlist = results.poseLandmarks.map((landmark, index) => {
+                    return [index, landmark.x * canvasElement.width, landmark.y * canvasElement.height];
+                });
+
+                if (imlist.length !== 0) {
+                    const leftElbowAngle = calculateAngle(imlist[11].slice(1), imlist[13].slice(1), imlist[15].slice(1));
+                    const rightElbowAngle = calculateAngle(imlist[12].slice(1), imlist[14].slice(1), imlist[16].slice(1));
+
+                    leftElbowAngleSmoothed = smoothAngle(leftElbowAngle, leftElbowAngleSmoothed);
+                    rightElbowAngleSmoothed = smoothAngle(rightElbowAngle, rightElbowAngleSmoothed);
+
+                    const elbowsBent = (leftElbowAngleSmoothed <= 55 || rightElbowAngleSmoothed <= 55);
+                    const hipBuffer = 10;
+                    const hipsLow = (imlist[12][2] && imlist[11][2] >= (imlist[14][2] + hipBuffer) && imlist[13][2]);
+                    const chestDown = (imlist[11][2] >= imlist[0][2] + 20 || imlist[12][2] >= imlist[0][2] + 20);
+
+                    if (hipsLow && elbowsBent && chestDown) {
+                        if (position !== "down") {
+                            position = "down";
+                        }
+                    } else if (hipsLow && !elbowsBent) {
+                        errorMessageElement.textContent = "Bend elbows more!";
+                        errorMessageElement.style.display = 'block';
+                    } else if (!hipsLow && elbowsBent) {
+                        errorMessageElement.textContent = "Lower your chest more!";
+                        errorMessageElement.style.display = 'block';
+                    } else if (hipsLow && elbowsBent && !chestDown) {
+                        errorMessageElement.textContent = "Lower Chest More!";
+                        errorMessageElement.style.display = 'block';
+                    } else {
+                        position = null;
+                        errorMessageElement.style.display = 'none';
+                    }
+
+                    if (imlist[12][2] && imlist[11][2] <= imlist[14][2] && imlist[13][2] && position === "down") {
+                        position = "up";
+                        if (imlist[12][2] < imlist[14][2] - 10 && imlist[11][2] < imlist[13][2] - 10) {
+                            count++;
+                            pushupCountElement.textContent = `Count: ${count}`;
+                        }
+                    }
+                    // Send coordinates to the worker
+                    myWorker.postMessage(results.poseLandmarks);
+                }
+            }
+            canvasCtx.restore();
+        }
+
+        const pose = new Pose({
+            locateFile: (file) => {
+                return `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`;
+            }
+        });
+        pose.setOptions({
+            modelComplexity: 0,
+            smoothLandmarks: true,
+            enableSegmentation: false,
+            smoothSegmentation: true,
+            minDetectionConfidence: 0.5,
+            minTrackingConfidence: 0.5
+        });
+        pose.onResults(onResults);
+
+        const camera = new Camera(videoElement, {
+            onFrame: async () => {
+                await pose.send({ image: videoElement });
+            },
+            width: 320,
+            height: 240
+        });
+        camera.start();
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'q' || count >= 5) {
+                camera.stop();
+            }
+        });
+    </script>
+    <script src="worker.js"></script>
+</body>
+</html>
