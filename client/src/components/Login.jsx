@@ -134,9 +134,6 @@ function Login() {
         {/* <video autoPlay muted loop id='myvideo'> <source src='GIF5.mp4' type='video/mp4' /> </video> */}
         <div className="formbox">
             <div className="formcontainer">
-                <div className="topHeader">
-                <h1>Login</h1>
-                </div>
                 <span className="social">
                 <a href="https://www.instagram.com/0605shivam?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer"> <span className='i'><FaInstagram  /></span></a>
                 <a href="https://www.instagram.com/0605shivam?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer"><span className='i'><FaFacebook  /></span></a>
