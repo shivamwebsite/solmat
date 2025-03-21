@@ -43,7 +43,7 @@ export default function Register() {
     const { fname, email, mobile, password } = udata;
     console.log(udata)
 
-    const res = await fetch("http://localhost:7000/register", {
+    const res = await fetch("https://solmat.onrender.com/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
