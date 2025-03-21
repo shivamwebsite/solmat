@@ -34,7 +34,7 @@ function Login() {
     const onSubmit=async (data) =>{
         // data.preventDefault();
         const{email,password}=data;
-        const res = await fetch("http://localhost:7000/login", {
+        const res = await fetch("https://solmat.onrender.com/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
